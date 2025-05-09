@@ -71,9 +71,8 @@ async def fetch_and_parse_book(url: str, cookies: dict) -> BookMetadata:
         description_block = block.select_one("[itemprop='description']")
         description = description_block.get_text(separator="\n", strip=True) if description_block else None
 
-        cover_style = block.select_one(".poster figure.cover")["style"]
-        cover_match = re.search(r"url\((.*?)\)", cover_style)
-        cover = cover_match.group(1) if cover_match else None
+        cover_tag = block.select_one(".poster a.highslide")
+        cover = cover_tag["href"] if cover_tag and cover_tag.has_attr("href") else None
 
         published = block.select_one("[itemprop='dateCreated']")
         publishedYear = published.get_text(strip=True) if published else None
